@@ -1,0 +1,36 @@
+{
+  "name": "Bell",
+  "version": "1.0.0",
+  "description": "A virtual bell for school",
+  "author": {
+    "name": "Addy Ireland"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "auto-launch": "^5.0.5",
+    "menubar": "^9.0.1",
+    "moment": "^2.29.0"
+  },
+  "scripts": {
+    "start": "electron index.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "rebuild": "./node_modules/.bin/electron-rebuild"
+  },
+  "devDependencies": {
+    "electron": "^10.1.1",
+    "electron-builder": "^22.8.0",
+    "electron-rebuild": "^2.0.1"
+  },
+  "build": {
+    "appId": "bell",
+    "files": [
+      "**/*",
+      "icons/*",
+      "node_modules/**/*",
+      "package.json",
+      "views/*.html"
+    ]
+  }
+}

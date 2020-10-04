@@ -1,0 +1,185 @@
+<html>
+
+<head>
+    <title>Bell</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@700&family=Roboto:wght@300;400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        #mainTime {
+            font-family: 'Kumbh Sans', sans-serif;
+            font-size: 40px;
+            padding-top: 6px;
+        }
+
+        #nextstr {
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
+        }
+
+        .main {
+            font-family: 'Roboto', sans-serif;
+            font-weight: lighter;
+            text-align: center;
+            display: inline-block;
+            margin: 10;
+        }
+
+        #bigbox {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        div{
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body id=body>
+    <div id=bigbox>
+        <div class="main" id="main">
+            <div id="title">Loading...</div>
+            <div id="mainTime">
+                00:00:00
+            </div>
+            <div id="next">
+                <a id="nexttxt"></a><a id="nextstr"></a>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://momentjs.com/downloads/moment.min.js"></script>
+
+<script>
+
+    const { ipcRenderer } = require('electron')
+    var path = require('path')
+
+    var mainTime = document.getElementById('mainTime')
+    var title = document.getElementById('title')
+    var next = document.getElementById('nextstr')
+    var nextBefore = document.getElementById('nexttxt')
+    var main = document.getElementById('main')
+    var body = document.getElementById('body')
+
+    var currentDisplay = getMessageData()
+    var resizeWin = false
+
+    updateTime()
+    resizeWindow()
+
+    window.addEventListener('click', function (event) {
+        if (event.detail === 3) {
+            window.close()
+        }
+    })
+
+    ipcRenderer.on('dark', (event, dark) => {
+
+        if (dark) {
+            darkMode()
+        } else {
+            lightMode()
+        }
+
+    })
+
+    function darkMode() {
+
+        body.style.backgroundColor = '#1e1e1e'
+        body.style.color = 'white'
+
+    }
+
+    function lightMode() {
+
+        body.style.backgroundColor = 'white'
+        body.style.color = 'black'
+
+    }
+
+    function updateTime() {
+
+        if (!currentDisplay || moment().isAfter(moment(currentDisplay.end))) {
+
+            currentDisplay = getMessageData()
+            resizeWin = true
+
+        }
+
+        if (currentDisplay) {
+            if (currentDisplay.special) {
+
+                mainTime.innerText = currentDisplay.current
+                title.innerText = ''
+                next.innerText = ''
+
+            } else {
+
+                if (currentDisplay.current) {
+
+                    title.innerText = currentDisplay.current
+
+                }
+
+                if (currentDisplay.end) {
+
+                    difference = moment(currentDisplay.end).diff(moment())
+
+                    mainTime.innerText = moment.utc(difference).format('HH:mm:ss')
+
+                }
+
+                if (currentDisplay.last) {
+
+                    next.innerText = currentDisplay.next
+                    nextBefore.innerText = ''
+
+                } else {
+
+                    next.innerText = currentDisplay.next
+                    nextBefore.innerText = 'Next Up: '
+
+                }
+
+            }
+        }
+
+
+
+        if (resizeWin) {
+
+            resizeWindow()
+
+            resizeWin = false
+
+        }
+
+
+
+        setTimeout(updateTime, 500)
+    }
+
+    function resizeWindow() {
+
+        var { height, width } = main.getBoundingClientRect()
+
+        //console.log(height, width)
+
+        ipcRenderer.send('resize', { x: width, y: height })
+
+    }
+
+    function getMessageData() {
+
+        return ipcRenderer.sendSync('updateData')
+
+    }
+
+</script>
+
+</html>
