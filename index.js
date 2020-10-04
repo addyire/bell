@@ -42,7 +42,6 @@ mb.on('ready', () => {
 
         }
 
-        /*
         if(settings.autoStart) {
 
             var bellAutoLaunch = new AutoLaunch({
@@ -60,7 +59,7 @@ mb.on('ready', () => {
                 console.error(err)
             })
 
-        }*/
+        }
 
     } else {
 
