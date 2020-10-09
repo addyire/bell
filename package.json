@@ -9,6 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "auto-launch": "^5.0.5",
+    "electron": "^10.1.3",
     "menubar": "^9.0.1",
     "moment": "^2.29.0"
   },
@@ -19,9 +20,14 @@
     "rebuild": "./node_modules/.bin/electron-rebuild"
   },
   "devDependencies": {
-    "electron": "^10.1.1",
     "electron-builder": "^22.8.0",
-    "electron-rebuild": "^2.0.1"
+    "electron-rebuild": "^2.0.1",
+    "eslint": "^7.10.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
   },
   "build": {
     "appId": "bell",

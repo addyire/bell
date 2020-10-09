@@ -10,7 +10,7 @@ console.log(DATA_PATH)
 var settings = undefined
 
 var indexPath = 'file://' + path.join(__dirname, '..', 'views', 'index.html')
-var iconPath = path.join(__dirname,'..', 'icons', 'smallicon@3x.png')
+var iconPath = path.join(__dirname,'..', 'icons', 'iconTemplate@3x.png')
 
 if(dataExists) {
     settings = tryToOpen(DATA_PATH)

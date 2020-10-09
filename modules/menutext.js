@@ -61,7 +61,7 @@ function timer(mb) {
 
         } else if(displayData.end && !displayData.special) {
 
-            difference = moment(displayData.end).diff(moment())
+            difference = moment(displayData.end).diff(moment().subtract(1, 'minute'))
 
             var actualInterval = (parseInt(moment.utc(difference).format('ss'))*1000) + 3000 //Add 3 second buffer
 
