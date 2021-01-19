@@ -146,6 +146,18 @@
 
                 }
 
+                if(currentDisplay.link) {
+
+                    mainTime.setAttribute('onclick', `openURL('${currentDisplay.link}')`)
+                    mainTime.style.cursor = "grab"
+
+                } else {
+
+                    mainTime.removeAttribute('onclick')
+                    mainTime.style.cursor = "initial"
+
+                }
+
             }
         }
 
@@ -177,6 +189,12 @@
     function getMessageData() {
 
         return ipcRenderer.sendSync('updateData')
+
+    }
+
+    function openURL(url) {
+
+        ipcRenderer.send('url', url)
 
     }
 

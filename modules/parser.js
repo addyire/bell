@@ -10,12 +10,9 @@ function picker(data) {
 
 }
 
-function parser(options) {
+function parser(classes, lang) {
 
-    console.log(options)
-
-    var lang = options.lang
-    var classes = picker(options.blocks)
+    classes = picker(classes)
 
     findings = {
         current: undefined,
@@ -25,8 +22,10 @@ function parser(options) {
         last: false
     }
 
+    if(!lang) return undefined;
 
-    if(!lang || !classes || !options.options) {
+
+    if(!classes) {
 
         findings.current = lang.noSchool
         findings.end = moment().add(1, 'd').hours(0).minutes(0).seconds(0).toISOString()
@@ -45,8 +44,7 @@ function parser(options) {
         findings.current = lang.beforeSchool
         findings.end = startOfSchool
         findings.next = classes[0].name
-
-        console.log('before school')
+        findings.special = false
 
     } else if (now.isAfter(endOfSchool)) {
 
@@ -72,6 +70,9 @@ function parser(options) {
 
                 findings.current = selected.name
                 findings.end = end
+                findings.link = selected.link
+
+                console.log(selected.link)
 
                 if (nextclass) {
 

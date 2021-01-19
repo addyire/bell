@@ -1,6 +1,6 @@
 {
     "blocks": {
-        "0": null,
+        "0": [],
         "1": [
             {
                 "start": "23:00",
@@ -12,7 +12,8 @@
             {
                 "start": "09:00",
                 "end": "10:15",
-                "name": "English - P1"
+                "name": "English - P1",
+                "link": "http://google.com"
             },
             {
                 "start": "10:30",
@@ -86,7 +87,7 @@
                 "name": "Team Sports - P5"
             },
             {
-                "start": "12:45",
+                "start": "12:30",
                 "end": "13:30",
                 "name": "Lunch"
             },
@@ -96,23 +97,24 @@
                 "name": "PreCalc Honors - P6"
             }
         ],
-        "6": [{
-            "start": "15:30",
-            "end": "15:44",
-            "name": "FOobar"
-        }]
+        "6": [
+            {
+                "start": "15:30",
+                "end": "15:44",
+                "name": "FOobar"
+            }
+        ]
+    },
+    "options": {
+        "textInBar": true,
+        "audibleDing": false,
+        "barShowNothingForSpecial": true,
+        "autoStart": true
     },
     "lang": {
         "beforeSchool": "😴 Before School 😴",
         "noClassesLeft": "🎉 Nothing Left 🎉",
         "passingPeriod": "🔔 Passing Period 🔔",
         "noSchool": "🎉 No School! 🎉"
-    },
-    "options": {
-        "textInBar": true,
-        "audibleDing": false,
-        "barShowNothingForSpecial": true,
-        "autoStart": true,
-        "windowPadding": 20
     }
 }

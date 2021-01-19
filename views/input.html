@@ -1,0 +1,336 @@
+<html>
+
+<head>
+	<style>
+		html{
+			color: white
+		}
+		.selected-day{
+			background-color: red;
+		}
+		#days{
+			width: 100%;
+		}
+		#days button{
+			width: 14.28%
+		}
+	</style>
+</head>
+
+<body>
+	<h1 id="hint"></h1>
+	<div id="days"></div>
+	<div id="section"></div>
+	<div id="options">
+		<label>Show text in bar (macOS only)</label> <input type="checkbox"> <br>
+		<label>Test 2</label><input type="checkbox">
+	</div>
+	<button onclick="save()">DONE</button>
+</body>
+<script>
+
+	var {ipcRenderer} = require('electron')
+
+	var CLASSES = {}
+	var LANG = {
+		"beforeSchool": "😴 Before School 😴",
+        "noClassesLeft": "🎉 Nothing Left 🎉",
+        "passingPeriod": "🔔 Passing Period 🔔",
+        "noSchool": "🎉 No School! 🎉"
+	}
+	var OPTIONS = {
+		"textInBar": true,
+        "audibleDing": false,
+        "barShowNothingForSpecial": true,
+        "autoStart": true
+	}
+
+	ipcRenderer.on("data", (e, data) => {
+
+		console.log(data)
+
+		if(data) {
+
+			CLASSES = data.blocks
+			LANG = data.lang ? data.lang : LANG
+			OPTIONS = data.options ? data.options : OPTIONS
+
+			setDay(1)
+
+		}
+
+	})
+
+	ipcRenderer.on("hint", (e, data) => {
+
+		document.getElementById("hint").innerText = data
+
+	})
+
+	const TABLE_ITEMS = ["start", "end", "name"]
+	const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+	const OPTION_DEFENITIONS = {
+		"textInBar": "Show text in the menu bar (macOS only): ",
+		"audibleDing": "Play audible ding on class end and start: ", 
+		"barShowNothingForSpecial": "Dont show anything in the bar when shool is not happening: ",
+		"autoStart": "Automatically Start: "
+	}
+
+	function changeOption(item, optionKey) {
+
+
+
+	}
+
+	function displayOptions() {
+
+		var optionKeys = Object.keys(OPTIONS)
+		var optionDiv = document.getElementById("options")
+
+		for(var optionIndex in optionKeys) {
+
+			var optionKey = optionKeys[optionIndex]
+			var optionDef = OPTION_DEFENITIONS[optionKey]
+
+			var label = document.createElement("label")
+			label.innerText = optionDef
+			
+			var button = document.createElement("input")
+			button.setAttribute("type", "checkbox")
+			button.setAttribute("onclick", `changeOption(this, "${optionKey}")`)
+
+			var newline = document.createElement("br")
+
+			opto
+
+
+		}
+
+	}
+
+	class Table {
+
+		constructor(id, data) {
+
+			console.log(this.data)
+
+			this.id = id
+			this.data = data ? data : []
+
+			this.createTable()
+
+		}
+
+		createTable() {
+
+			var table = document.createElement("table");
+			var tBody = document.createElement("tbody");
+
+			var data = this.data
+
+			tBody.appendChild(generateHeader())
+
+			for(var classNum in data) {
+
+				var classs = data[classNum]
+				var row = document.createElement('tr')
+
+				for(var item in TABLE_ITEMS) {
+
+					var itemKey = TABLE_ITEMS[item]
+
+					item = classs[itemKey]
+					item = item ? item : '' 
+
+					var cell = document.createElement("td")
+					var cellText = document.createElement("input")
+					
+					cellText.setAttribute("type", "input")
+					cellText.value = item
+					cellText.setAttribute("onchange", `t.updateData(this, "${classNum}", "${itemKey}")`)
+
+					cell.appendChild(cellText)
+					row.appendChild(cell)
+
+				}
+
+				var deleteButton = document.createElement("button")
+				deleteButton.innerText = "Delete"
+				deleteButton.setAttribute("onclick", `t.delete(${classNum})`)
+
+				row.appendChild(deleteButton)
+
+				tBody.appendChild(row)
+
+			}
+
+			table.appendChild(tBody)
+			document.getElementById(this.id).appendChild(table)
+
+			var addNewButton = document.createElement("button")
+			addNewButton.innerText = "Add"
+			addNewButton.setAttribute("onclick", `t.addEmptyItem()`)
+
+			document.getElementById(this.id).appendChild(addNewButton)
+
+		}
+
+		newData(data) {
+
+			console.log(data)
+
+			this.data = data
+			this.refreshTable()
+
+		}
+
+		addEmptyItem() {
+
+			this.data.push({})
+			this.refreshTable()
+
+			console.log(this.data, CLASSES)
+
+		}
+
+		refreshTable() {
+
+			document.getElementById(this.id).innerHTML = ''
+			this.createTable()
+
+		}
+
+		updateData(cell, row, col) {
+
+			console.log(cell, row, col)
+			
+			this.data[row][col] = cell.value
+
+			console.log(this.data)
+
+		}
+		
+		delete(classs) {
+
+			this.data = removeFromArray(this.data, classs)
+			this.refreshTable()
+
+		}
+
+		getDataAndClearTable() {
+
+			document.getElementById(this.id).innerHTML = ''
+			return this.data
+
+		}
+
+	}
+
+	function removeFromArray(arr, num) {
+
+		var final = []
+
+		for(var item in arr) {
+
+			if(item != num) {final.push(arr[item])}
+			else continue
+
+		}
+
+		return final
+
+	}
+
+	function generateHeader() {
+
+		var row = document.createElement("tr")
+
+		for(var item in TABLE_ITEMS) {
+
+			var cell = document.createElement("th")
+			var cellText = document.createTextNode(capatalize(TABLE_ITEMS[item]))
+
+			cell.appendChild(cellText)
+			row.appendChild(cell)
+
+		}
+
+		return row
+	}
+
+	function capatalize(s) {
+		if(typeof s !== 'string') return ''
+		return s.charAt(0).toUpperCase() + s.slice(1)
+	}
+
+	generateDayButtons("days")
+
+	function generateDayButtons(id) {
+
+		var button
+
+		for(var day in DAYS) {
+
+			button = document.createElement("button")
+			button.innerText = DAYS[day]
+			button.setAttribute("onclick", `setDay(${day})`)
+			button.setAttribute("id", `day-${day}`)
+
+			document.getElementById(id).appendChild(button)
+		}
+
+	}
+
+	var t, oldDay
+
+	function setDay(day) {
+
+		console.log(oldDay)
+
+		if(typeof oldDay != "undefined") {
+
+			console.log("removing", oldDay)
+
+			document.getElementById(`day-${oldDay}`).classList.remove('selected-day')
+
+		}
+
+		if(t) {
+
+			CLASSES[oldDay] = t.getDataAndClearTable()
+
+		}
+
+		t = new Table("section")
+
+		//document.getElementById("selected").innerText = "Selected: " + DAYS[day]
+		document.getElementById(`day-${day}`).classList.add('selected-day')
+
+		t.newData(CLASSES[day])
+
+		console.log(CLASSES[day])
+
+		oldDay = day
+
+	}
+
+	function save() {
+
+		if(t && oldDay) {
+
+			CLASSES[oldDay] = t.getDataAndClearTable()
+
+		}
+
+		data = {
+			"blocks": CLASSES,
+			"options": OPTIONS,
+			"lang": LANG
+		}
+
+		ipcRenderer.send("save", data)
+
+	}
+</script>
+
+</html>

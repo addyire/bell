@@ -1,44 +1,24 @@
 var parser = require('./parser')
-var setup = require('./setupmanager')
+var setup = require('./sm')
 
 var moment = require('moment')
 
+const OPTIONS = setup.readData().data
+const CLOCK_INTERVAL = 60 * 1000 //Refresh every minute
 var disableClock = false
-var options = undefined
 
-try{
+module.exports = (mb) => {
 
-    if(options.clockTimer) {
-
-        var CLOCK_INTERVAL = options.clockTimer
-
-    }
-
-} catch(err) {
-    var CLOCK_INTERVAL = 60*1000
-}
-
-module.exports.start = (mb, specialSettings) => {
-
-    options = setup.settings()
-
-    if(!data) return;
-
-    disableClock = false
+    
 
     timer(mb)
 
 }
 
-module.exports.stop = () => {
-
-    disableClock = true
-    
-}
 
 function timer(mb) {
 
-    var displayData = parser(setup.classes(), setup.lang())
+    var displayData = parser(OPTIONS.blocks, OPTIONS.lang)
 
     console.log(displayData)
 
@@ -48,7 +28,7 @@ function timer(mb) {
 
         if(displayData.special) {
 
-            if(options.barShowNothingForSpecial) {
+            if(OPTIONS.options.barShowNothingForSpecial) {
 
                 mb.tray.setTitle("")
 
